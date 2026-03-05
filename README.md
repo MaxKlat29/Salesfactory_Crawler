@@ -117,7 +117,30 @@ Die Resultate werden fortlaufend in `contacts_out.xlsx` gespeichert. Die Datei w
 
 ---
 
-## 6. Troubleshooting
+## 6. Aufbau der `input.xlsx`
+
+Das Tool verarbeitet Standard-Exporte von Lead-Plattformen wie Snov.io oder Apollo. Entscheidend ist, dass die Spaltennamen für die LinkedIn-URLs mit deiner `config.yaml` übereinstimmen.
+
+### Beispiel-Struktur (Header in Zeile 1)
+
+| First Name | Last Name | Job Title | Company Name | LinkedIn Profile URL |
+| :--- | :--- | :--- | :--- | :--- |
+| Max | Mustermann | Head of Sales | Musterfirma GmbH | `https://www.linkedin.com/in/max-mustermann-123/` |
+| Anna | Schmidt | CEO & Founder | TechNova Solutions | `https://www.linkedin.com/in/anna-schmidt-tech/` |
+| Lukas | Weber | Director Business Development | Weber Consulting | `https://www.linkedin.com/in/lukas-weber-bd/` |
+
+### Wichtige Regeln
+
+| Regel | Details |
+| :--- | :--- |
+| **LinkedIn-Spalte ist Pflicht** | Der Crawler braucht die Profil-URL. Der Spaltenname (z. B. `LinkedIn Profile URL`, `Person Linkedin Url` oder `LinkedIn`) muss exakt im Array `linkedin_raw` in der `config.yaml` eingetragen sein. |
+| **Personalisierungs-Daten** | `First Name`, `Last Name` und `Company Name` sind für das LLM essenziell – der Agent nutzt diese Felder für die Anrede und den Firmenbezug im Pitch. |
+| **Keine leeren Zeilen** | Komplett leere Zeilen zwischen Leads können dazu führen, dass Pandas die Verarbeitung abbricht. |
+| **Dateiformat** | Zwingend als `.xlsx` (Excel-Arbeitsmappe) speichern – **nicht** als `.csv`. |
+
+---
+
+## 7. Troubleshooting
 
 | Fehlerbild | Ursache | Lösung |
 | :--- | :--- | :--- |
