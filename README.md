@@ -134,8 +134,7 @@ Das Tool verarbeitet Standard-Exporte von Lead-Plattformen wie Snov.io oder Apol
 | Regel | Details |
 | :--- | :--- |
 | **LinkedIn-Spalte ist Pflicht** | Der Crawler braucht die Profil-URL. Der Spaltenname (z. B. `LinkedIn Profile URL`, `Person Linkedin Url` oder `LinkedIn`) muss exakt im Array `linkedin_raw` in der `config.yaml` eingetragen sein. |
-| **Personalisierungs-Daten** | `First Name`, `Last Name` und `Company Name` sind für das LLM essenziell – der Agent nutzt diese Felder für die Anrede und den Firmenbezug im Pitch. |
-| **Keine leeren Zeilen** | Komplett leere Zeilen zwischen Leads können dazu führen, dass Pandas die Verarbeitung abbricht. |
+| **Personalisierungs-Daten** | `First Name`, `Last Name` und `Company Name` sind für das LLM wichtig, wenn der Agent aus dem LinkedIn Profil bspw. keinen Nachnamen extrahieren kann. |
 | **Dateiformat** | Zwingend als `.xlsx` (Excel-Arbeitsmappe) speichern – **nicht** als `.csv`. |
 
 ---
