@@ -2,7 +2,7 @@
 
 > Ein KI-gestütztes, lokales Automatisierungs-Tool, das LinkedIn-Profile crawlt, Leads bewertet und hochpersonalisierte Outreach-Nachrichten generiert.
 
-Dieses Projekt wandelt rohe Kontaktlisten (z. B. aus Snov.io-Exporten) in versandfertige LinkedIn-Kampagnen um. Es umgeht gängige API-Restriktionen durch lokales Browser-Scraping und nutzt fortschrittliche LLMs, um Profil- und Beitragsdaten zu analysieren und hochgradig personalisierte Nachrichteneinstiege („Firmenwinkel") zu formulieren.
+Dieses Projekt wandelt rohe Kontaktlisten (z. B. aus Snov.io-Exporten) in versandfertige LinkedIn-Kampagnen um. Es funktionier durch lokales Browser-Scraping und nutzt fortschrittliche LLMs, um Profil- und Beitragsdaten zu analysieren und hochgradig personalisierte Nachrichteneinstiege zu formulieren.
 
 ---
 
