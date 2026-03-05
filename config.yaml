@@ -1,0 +1,161 @@
+openrouter:
+  base_url: "https://openrouter.ai/api/v1"
+  api_key: "API-KEY"
+  model: "qwen/qwen3-max"
+
+files:
+  input_raw: "input.xlsx"
+  input_preprocessed: "contacts_urls.xlsx"
+  output: "contacts_out.xlsx"
+
+settings:
+  sleep_sec: 0.5
+  overwrite: true
+  enable_company_angle: true
+  company_angle_cache: true
+  enable_matching_score: true
+  enable_activity_score: true
+
+columns:
+  linkedin_raw: ["LinkedIn", "Profil-URL"] #
+  linkedin_clean: "LinkedIn"
+  activity: "User social" 
+  template: "Vorlage"
+  company_angle: "Firmenwinkel"
+  matching_score: "Matching Punkte"
+  matching_raw: "Matching Punkte Raw"
+  activity_score: "LinkedIn Aktivität Punkte"
+  activity_raw: "LinkedIn Aktivität Punkte Raw"
+  total_score: "Gesamt Punkte"
+
+prompts:
+  static_body: |
+    Passend dazu entwickeln wir derzeit ein KI gestütztes Produkt, das Unternehmen bei der Einhaltung komplexer Vorgaben wie DORA und NIS2 unterstützt und Prozesse spürbar vereinfacht. Wenn Sie möchten, können wir uns dazu kurz austauschen. 
+
+    Rüdiger Lang
+    KI Spezialist, Consileon GmbH
+
+  system_guardrails_opening: |
+    Du lieferst ausschließlich den personalisierten Einstieg einer LinkedIn Direktnachricht.
+    Keine Betreffzeile.
+    Person IMMER mit Nachname und falls gegeben mit Titel Dr oder Prof ansprechen.
+    Keine Grußformel am Ende.
+    Keine Bullet Points.
+    Kein Sales Pitch.
+    Keine übertriebenen Komplimente.
+    Keine erfundenen Details.
+    Verwende keine der Zeichen : oder ;.
+    Bindestriche und Gedankenstriche vermeiden, nutze stattdessen Leerzeichen.
+
+    Format ist zwingend
+    Zeile 1 Anrede endet mit Komma.
+    Zeile 2 leer.
+    Zeile 3 genau ein Absatz mit GENAU 2 Sätzen.
+
+    Inhaltliche Regeln für die 2 Sätze
+    Satz 1 nennt LinkedIn als Quelle und referenziert konkret Beitrag oder Profil.
+    Satz 2 ist KEINE Frage, kein Fragezeichen.
+    Satz 2 ist eine kurze, menschliche Einordnung, die zeigt dass du den Beitrag oder die Verantwortungsbereiche verstanden hast.
+    Nutze dafür nur Dinge, die im Dump oder in den Kontakt Infos stehen.
+
+    Nicht schreiben ich habe Ihr Profil gesehen.
+    Nicht schreiben hat mich angesprochen.
+    Nicht beginnen mit In Ihrer Rolle als.
+    Wenn du das Unternehmen erwähnst, verwende EXAKT die Zeichenkette aus Unternehmen Umgang.
+    Wenn ein Optionaler Kontext Satz vorhanden ist, nutze ihn als Grundlage für Satz 2.
+
+  user_prompt_opening: |
+    Aufgabe
+    Formuliere den Einstieg einer LinkedIn Direktnachricht an eine Compliance Person.
+
+    Ton
+    Professionell, ruhig, nahbar, auf Augenhöhe.
+    Klingt wie ein Mensch, nicht wie ein Modell.
+
+    Pflicht
+    Genau 2 Sätze im Absatz.
+    Satz 1 enthält LinkedIn und Beitrag oder Profil.
+    Satz 2 ist eine Einordnung ohne Fragezeichen.
+
+    Fewshot Beispiele guter Output
+    Beispiel A Beitrag erkennbar
+    Hallo Herr Mustermann,
+
+    Auf LinkedIn bin ich ueber Ihren Beitrag zu Governance im Alltag gestolpert. Gerade die Uebersetzung von Leitplanken in echte Entscheidungen wirkt in der Praxis oft wie der Knackpunkt.
+
+    Beispiel B Beitrag erkennbar mit Unternehmen Umgang
+    Sehr geehrter Herr Mustermann,
+
+    Auf LinkedIn bin ich ueber Ihren Punkt zu Datenschutz und Risiko gestolpert. Wenn Compliance, Datenschutz und Risk eng zusammenspielen, entsteht der Hebel meist in klaren Schnittstellen und einer sauberen Umsetzungslogik.
+
+    Beispiel C kein Beitrag erkennbar Profil
+    Sehr geehrte Frau Mustermann,
+
+    Auf LinkedIn bin ich ueber Ihr Profil im Bereich Compliance und Risk gestolpert. Man merkt sofort, dass es dabei weniger um Papier geht und mehr um wirksame Prozesse im Alltag.
+
+    Negativ Beispiele vermeiden
+    Nicht so
+    Ihr Beitrag hat mich angesprochen ueber LinkedIn.
+    Nicht so
+    Koennte die Firma vor Herausforderungen stehen.
+
+  company_angle_guardrails: |
+    Du lieferst genau einen einzigen Satz.
+    Der Satz ist optionaler Kontext für das Anschreiben und soll dort als Input einfließen.
+    Der Satz ist KEINE Frage und enthält kein Fragezeichen.
+    Keine Faktenbehauptungen über das Unternehmen.
+    Nutze nur Infos aus dem Dump oder Kontakt Infos.
+    Der Satz darf das Unternehmen nennen, aber nur exakt in der Form aus Firma Umgang.
+    Nicht beginnen mit In Ihrer Rolle als.
+    Keine Bullet Points.
+    Keine : oder ;.
+    Bindestriche vermeiden, nutze stattdessen Leerzeichen.
+    Wenn du keinen sauberen Satz erzeugen kannst, antworte exakt mit LEER.
+
+  matching_score_prompt: |
+    Bitte analysiere den folgenden Text und extrahiere:
+    - Vor und Zuname
+    - Firmenname
+    - Kontakt E Mail
+    - Anzahl Follower und Kontakte
+    KI Expertise 0 bis 20 Punkte
+    - Berufliche Rolle mit KI Bezug z B AI ML Data Science
+    - Explizite Nennung von KI ML LLM Automation GenAI
+    - Verantwortung für KI Systeme
+     
+    Compliance Expertise 0 bis 60 Punkte
+    - Rollen wie Compliance Officer Risk Legal Regulatory Audit
+    - Inhaltlicher Bezug zu Compliance Governance AML KYC Datenschutz
+     
+    Addiere Punkte so, dass der Gesamtscore zwischen 0 und 100 liegt.
+    Nur, wenn die Person sowohl Expertise im Compliance hat als auch in der Künstlichen Intelligenz, würde das einen Score je nach Qualität von über 80 Punkten ausmachen.
+    Antworte kurz
+
+    WICHTIG Gib den Gesamtscore in der ersten Zeile im Format SCORE=NN aus.
+    Danach maximal 1 bis 2 kurze Zeilen Begründung.
+
+    TEXT
+    {text}
+
+  activity_score_prompt: |
+    Bitte analysiere den folgenden Text und bewerte die LinkedIn Aktivität der Person als Punkte 0 bis 100.
+
+    Punkte Logik
+    1 Profil gepflegt und vollständig 0 oder 25 Punkte
+       25 Punkte nur wenn das Profil klar gepflegt wirkt z B mehrere Sektionen gefüllt wie About Experience Education sowie klare aktuelle Rolle und konsistente Infos
+
+    2 Elemente unter Beitraegen vorhanden 0 oder 25 Punkte
+       25 Punkte nur wenn im Dump Hinweise auf Interaktions Elemente vorkommen z B Reactions Likes Kommentare Shares oder Zaehlwerte dazu
+
+    3 Selbst Beitraege verfasst 0 bis 50 Punkte
+       0 wenn keine eigenen Beitraege erkennbar
+       20 wenn genau 1 eigener Beitrag erkennbar
+       35 wenn mehrere eigene Beitraege erkennbar aber nicht regelmaessig
+       50 wenn viele oder klar regelmaessige eigene Beitraege erkennbar
+
+    WICHTIG
+    Gib die Gesamtpunkte in der ersten Zeile exakt im Format ACTIVITY=NN aus.
+    Danach optional 1 kurze Zeile Begruendung.
+
+    TEXT
+    {text}
